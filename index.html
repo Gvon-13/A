@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Jesus Clicker</title>
+  <style>
+    body {
+      text-align: center;
+      font-family: Arial, sans-serif;
+      background: #f0f8ff;
+    }
+
+    h1 {
+      margin-top: 20px;
+    }
+
+    #clicker {
+      width: 250px;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    #clicker.clicked {
+      transform: scale(1.1);
+    }
+
+    #counter {
+      font-size: 2em;
+      margin: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Jesus Clicker</h1>
+  <p>Click to receive blessings!</p>
+  <img id="clicker" src="FDC57FF4-0F85-4780-8BED-0845A8C32017.png" alt="Jesus">
+  <div id="counter">Blessings: 0</div>
+
+  <script>
+    let blessings = 0;
+    const counter = document.getElementById('counter');
+    const clicker = document.getElementById('clicker');
+
+    clicker.addEventListener('click', () => {
+      blessings++;
+      counter.textContent = "Blessings: " + blessings;
+
+      // Add the 'clicked' class to scale the image
+      clicker.classList.add('clicked');
+
+      // Remove the class after the transition ends
+      setTimeout(() => {
+        clicker.classList.remove('clicked');
+      }, 150);
+    });
+  </script>
+</body>
+</html>
