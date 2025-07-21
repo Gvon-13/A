@@ -1,59 +1,138 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Jesus Clicker</title>
   <style>
     body {
       text-align: center;
       font-family: Arial, sans-serif;
-      background: #f0f8ff;
+      background: #eef6ff;
+      overflow: hidden;
     }
 
     h1 {
       margin-top: 20px;
     }
 
+    #game-area {
+      position: relative;
+      margin: 40px auto;
+      width: 300px;
+      height: 300px;
+    }
+
     #clicker {
-      width: 250px;
-      cursor: pointer;
+      width: 150px;
       transition: transform 0.2s ease;
+      position: absolute;
+      top: 75px;
+      left: 75px;
+      z-index: 2;
     }
 
     #clicker.clicked {
       transform: scale(1.1);
     }
 
+    .clicker-nail {
+      width: 40px;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform-origin: center -120px;
+      pointer-events: none;
+      transition: transform 0.1s linear;
+    }
+
     #counter {
       font-size: 2em;
       margin: 20px;
+    }
+
+    #buy-clicker {
+      margin-top: 20px;
+      font-size: 1em;
+      padding: 10px 20px;
     }
   </style>
 </head>
 <body>
   <h1>Jesus Clicker</h1>
   <p>Click to receive blessings!</p>
-  <img id="clicker" src="E356BFCF-70D5-4F5A-9064-67224DCE8EBA.png" alt="Jesus">
+
+  <div id="game-area">
+    <img id="clicker" src="images/jesus.png" alt="Jesus">
+  </div>
+
   <div id="counter">Blessings: 0</div>
+  <button id="buy-clicker">Buy Nail Clicker (Cost: 50)</button>
 
   <script>
     let blessings = 0;
-    const counter = document.getElementById('counter');
+    let clickers = 0;
     const clicker = document.getElementById('clicker');
+    const counter = document.getElementById('counter');
+    const gameArea = document.getElementById('game-area');
+    const buyButton = document.getElementById('buy-clicker');
+    const clickersList = [];
 
+    // Manual click
     clicker.addEventListener('click', () => {
       blessings++;
-      counter.textContent = "Blessings: " + blessings;
-
-      // Add the 'clicked' class to scale the image
+      updateCounter();
       clicker.classList.add('clicked');
-
-      // Remove the class after the transition ends
-      setTimeout(() => {
-        clicker.classList.remove('clicked');
-      }, 150);
+      setTimeout(() => clicker.classList.remove('clicked'), 150);
     });
+
+    // Update counter text
+    function updateCounter() {
+      counter.textContent = "Blessings: " + blessings;
+    }
+
+    // Add auto-clicker nail
+    function addAutoClicker() {
+      const nail = document.createElement('img');
+      nail.src = 'A/82A4D256-D693-4130-AC1E-E4FCFD581A14.png'; // Your actual path
+      nail.className = 'clicker-nail';
+      gameArea.appendChild(nail);
+
+      const nailData = {
+        angle: Math.random() * 360,
+        element: nail
+      };
+      clickersList.push(nailData);
+    }
+
+    // Buy button
+    buyButton.addEventListener('click', () => {
+      const cost = 50;
+      if (blessings >= cost) {
+        blessings -= cost;
+        addAutoClicker();
+        updateCounter();
+      }
+    });
+
+    // Rotate and auto-click
+    setInterval(() => {
+      blessings += clickersList.length;
+      updateCounter();
+
+      clickersList.forEach((nailData, index) => {
+        nailData.angle += 0.5; // degrees per tick
+        const rad = nailData.angle * (Math.PI / 180);
+        const radius = 120;
+
+        const x = 150 + radius * Math.cos(rad) - 20; // center x - image offset
+        const y = 150 + radius * Math.sin(rad) - 20; // center y - image offset
+
+        nailData.element.style.left = `${x}px`;
+        nailData.element.style.top = `${y}px`;
+        nailData.element.style.transform = `rotate(${nailData.angle + 90}deg)`; // point inward
+      });
+    }, 1000);
   </script>
 </body>
 </html>
